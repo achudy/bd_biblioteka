@@ -13,7 +13,7 @@ def create_app():
     app = Flask(__name__)
     # TODO if running this on your own - change the line below accordingly
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://testowy:password@127.0.0.1/books'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://g15:4fkd9zjj@127.0.0.1/g15'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://g15:{pwd}@127.0.0.1/g15'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.config['PROPAGATE_EXCEPTIONS'] = True
 
