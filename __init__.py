@@ -11,7 +11,7 @@ def query_to_dict(ret):
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://g15:{password}@127.0.0.1/g15'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://g15:{pass}@127.0.0.1/g15'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.config['PROPAGATE_EXCEPTIONS'] = True
 
@@ -55,7 +55,7 @@ def create_app():
     def book_id():
         id = request.args.get('id', None)
         title = request.args.get('title', None)
-        category = request.args.get('category', None)
+        # category = request.args.get('category', None)
         author = request.args.get('author', None)
 
         query = 'select * from books where '
@@ -74,12 +74,12 @@ def create_app():
                 query += 'and '
             filtered = "'%%" + author + "%%'"
             query += f'author like {filtered} '
-            and_specifier = True
-        if category is not None:
-            if and_specifier:
-                query += 'and '
-            query += f'fk_category_id = {category} '
             # and_specifier = True
+        # if category is not None:
+        #     if and_specifier:
+        #         query += 'and '
+        #     query += f'fk_category_id = {category} '
+        #     # and_specifier = True
         query += ';'
 
         result = query_to_dict(db.session.execute(query))
