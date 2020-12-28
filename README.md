@@ -5,6 +5,13 @@
 #### GET / 
 Gets you a classic youtube video.
 
+#### GET /authtest
+Basic authentication:
+* login
+* password
+
+Gets you a "success" if auth was handled correctly.
+
 #### GET /books 
 Gets you all the books.
 
@@ -29,10 +36,14 @@ Example usage:
 
 Gets you the availability of Stanisław Lem's "Solaris"
 
-#### GET /borrowed 
+#### GET /borroweds
 Gets you all the borrowed books.
 
 #### GET /borrowed/user
+Basic authentication:
+* login
+* password
+
 Parameters:
 * login (str)
 
@@ -42,6 +53,10 @@ Example usage:
 Gets you all books borrowed by the user with login "achudy"
 
 #### GET /borrowed/id
+Basic authentication:
+* login
+* password
+
 Parameters:
 * id (int)
 
@@ -76,9 +91,17 @@ Example usage:
 Gets you only the branch with id=1.
 
 #### GET /users 
+Basic authentication:
+* login
+* password
+
 Gets you all the users.
 
 #### GET /users/user
+Basic authentication:
+* login
+* password
+
 Parameters:
 * login (str)
 
@@ -90,7 +113,11 @@ Gets you only the user with login "achudy"
 
 ## POST
 
-#### POST /books
+#### POST /book
+Basic authentication:
+* login
+* password
+
 Form data: 
 * title (str)
 * author (str)
@@ -101,6 +128,10 @@ Form data:
 Posts a book.
 
 #### POST /borrowed
+Basic authentication:
+* login
+* password
+
 Form data: 
 * user_id (int)
 * book_instance_id (int)
@@ -109,13 +140,21 @@ Form data:
 
 Posts a borrowed record.
 
-#### POST /categories
+#### POST /category
+Basic authentication:
+* login
+* password
+
 Form data: 
 * category_name (str)
 
 Posts a category.
 
-#### POST /branches
+#### POST /branch
+Basic authentication:
+* login
+* password
+
 Form data: 
 * address (str)
 * library_branch_name (str)
@@ -123,6 +162,10 @@ Form data:
 Posts a library branch.
 
 #### POST /users
+Basic authentication:
+* login
+* password
+
 Form data: 
 * name (str)
 * surname (str)
@@ -135,7 +178,11 @@ Posts a user.
 
 ## PUT
 
-#### PUT /books
+#### PUT /book
+Basic authentication:
+* login
+* password
+
 Form data: 
 * id (int)
 * author (str)
@@ -145,6 +192,10 @@ Form data:
 Updates a book.
 
 #### PUT /borrowed
+Basic authentication:
+* login
+* password
+
 Form data: 
 * id (int)
 * user_id (int)
@@ -154,14 +205,22 @@ Form data:
 
 Updates a borrowed record.
 
-#### PUT /categories
+#### PUT /category
+Basic authentication:
+* login
+* password
+
 Form data: 
 * id (int)
 * category_name (str)
 
 Updates a category.
 
-#### PUT /branches
+#### PUT /branch
+Basic authentication:
+* login
+* password
+
 Form data: 
 * id (int)
 * address (str)
@@ -170,6 +229,10 @@ Form data:
 Updates a library branch.
 
 #### PUT /users
+Basic authentication:
+* login
+* password
+
 Form data: 
 * id (int)
 * name (str)
@@ -183,7 +246,11 @@ Updates a user.
 
 ## DELETE
 
-#### DELETE /books
+#### DELETE /book
+Basic authentication:
+* login
+* password
+
 Parameters:
 * id (int)
 
@@ -193,24 +260,40 @@ Example usage:
 Deletes a book.
 
 #### DELETE /borrowed
+Basic authentication:
+* login
+* password
+
 Parameters:
 * id (int)
 
 Deletes a borrowed record.
 
-#### DELETE /categories
+#### DELETE /category
+Basic authentication:
+* login
+* password
+
 Parameters:
 * id (int)
 
 Deletes a category.
 
-#### DELETE /branches
+#### DELETE /branch
+Basic authentication:
+* login
+* password
+
 Parameters:
 * id (int)
 
 Deletes a library branch.
 
 #### DELETE /users
+Basic authentication:
+* login
+* password
+
 Parameters:
 * id (int)
 

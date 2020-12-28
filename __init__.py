@@ -1,31 +1,55 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def query_to_dict(ret):
     if ret is not None:
-        return jsonify([{key: value for key, value in row.items()} for row in ret if row is not None])
+        return [{key: value for key, value in row.items()} for row in ret if row is not None]
     else:
-        return {}
+        return []
 
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://g15:{pass}@127.0.0.1/g15'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://g15:4fkd9zjj@127.0.0.1/g15'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.config['PROPAGATE_EXCEPTIONS'] = True
+    app.config['JSON_AS_ASCII'] = False
 
+    auth = HTTPBasicAuth()
     db = SQLAlchemy(app)
+
+    @auth.verify_password
+    def verify_password(username, password):
+        login_and_password = query_to_dict(db.session.execute(
+            f"select login, password from users where login='{username}';"))
+        if login_and_password:
+            if check_password_hash(login_and_password[0]['password'], password):
+                return True
+
+    @app.route('/authtest', methods=['GET'])
+    @auth.login_required
+    def test():
+        return "success"
 
     @app.route('/', methods=['GET'])
     def this_is_library():
         return 'https://www.youtube.com/watch?v=9Wq54dK0aBs&ab_channel=KING5'
 
-    @app.route('/books', methods=['GET', 'POST', 'PUT', 'DELETE'])
+    @app.route('/books', methods=['GET'])
     def books():
         if request.method == 'GET':
             result = query_to_dict(db.session.execute('select * from books;'))
-            return result
+            return jsonify(result)
+
+    @app.route('/book', methods=['POST', 'PUT', 'DELETE'])
+    @auth.login_required
+    def book():
+        if request.method == 'GET':
+            result = query_to_dict(db.session.execute('select * from books;'))
+            return jsonify(result)
         if request.method == 'POST':
             title = request.form.get('title', None)
             author = request.form.get('author', None)
@@ -83,20 +107,24 @@ def create_app():
         query += ';'
 
         result = query_to_dict(db.session.execute(query))
-        return result
+        return jsonify(result)
 
     @app.route('/availability', methods=['GET'])
     def get_availability():
         title = request.args.get('title', None)
         author = request.args.get('author', None)
         result = query_to_dict(db.session.execute(f"CALL check_availability('{title}', '{author}');"))
-        return result
+        return jsonify(result)
 
-    @app.route('/borrowed', methods=['GET', 'POST', 'PUT', 'DELETE'])
-    def borrowed():
+    @app.route('/borroweds', methods=['GET'])
+    def borroweds():
         if request.method == 'GET':
             result = query_to_dict(db.session.execute('select * from borrowed;'))
-            return result
+            return jsonify(result)
+
+    @app.route('/borrowed', methods=['POST', 'PUT', 'DELETE'])
+    @auth.login_required
+    def borrowed():
         if request.method == 'POST':
             user_id = request.form.get('user_id', None)
             book_instance_id = request.form.get('book_instance_id', None)
@@ -125,22 +153,28 @@ def create_app():
             return {"status": "OK"}
 
     @app.route('/borrowed/user', methods=['GET'])
+    @auth.login_required
     def get_borrowed_user():
         login = request.args.get('login', None)
         result = query_to_dict(db.session.execute(f"CALL get_users_books('{login}');"))
-        return result
+        return jsonify(result)
 
     @app.route('/borrowed/id', methods=['GET'])
+    @auth.login_required
     def get_borrowed_id():
         id = request.args.get('id', None)
         result = query_to_dict(db.session.execute(f"select * from borrowed where id={id};"))
-        return result
+        return jsonify(result)
 
-    @app.route('/categories', methods=['GET', 'POST', 'PUT', 'DELETE'])
+    @app.route('/categories', methods=['GET'])
     def categories():
         if request.method == 'GET':
             result = query_to_dict(db.session.execute('select * from categories;'))
-            return result
+            return jsonify(result)
+
+    @app.route('/category', methods=['POST', 'PUT', 'DELETE'])
+    @auth.login_required
+    def category():
         if request.method == 'POST':
             category_name = request.form.get('category_name', None)
             db.session.execute(
@@ -165,13 +199,17 @@ def create_app():
         title = request.args.get('title', None)
         author = request.args.get('author', None)
         result = query_to_dict(db.session.execute(f"CALL get_category_of_book('{title}', '{author}');"))
-        return result
+        return jsonify(result)
 
-    @app.route('/branches', methods=['GET', 'POST', 'PUT', 'DELETE'])
+    @app.route('/branches', methods=['GET'])
     def branches():
         if request.method == 'GET':
             result = query_to_dict(db.session.execute('select * from library_branches;'))
-            return result
+            return jsonify(result)
+
+    @app.route('/branch', methods=['POST', 'PUT', 'DELETE'])
+    @auth.login_required
+    def branch():
         if request.method == 'POST':
             address = request.form.get('address', None)
             library_branch_name = request.form.get('library_branch_name', None)
@@ -199,18 +237,19 @@ def create_app():
     def get_branches_id():
         id = request.args.get('id', None)
         result = query_to_dict(db.session.execute(f"select * from library_branches where id={id};"))
-        return result
+        return jsonify(result)
 
     @app.route('/users', methods=['GET', 'POST', 'PUT', 'DELETE'])
+    @auth.login_required
     def get_users():
         if request.method == 'GET':
             result = query_to_dict(db.session.execute('select * from users;'))
-            return result
+            return jsonify(result)
         if request.method == 'POST':
             name = request.form.get('name', None)
             surname = request.form.get('surname', None)
             login = request.form.get('login', None)
-            password = request.form.get('password', None)
+            password = generate_password_hash(request.form.get('password', None))
             birth_date = request.form.get('birth_date', None)
             user_type = request.form.get('user_type', None)
             db.session.execute(
@@ -238,9 +277,10 @@ def create_app():
             return {"status": "OK"}
 
     @app.route('/users/user', methods=['GET'])
+    @auth.login_required
     def get_users_user():
         login = request.args.get('login', None)
         result = query_to_dict(db.session.execute(f"select * from users where login='{login}';"))
-        return result
+        return jsonify(result)
 
     return app
