@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -56,19 +57,25 @@ def create_app():
             for_adults = request.form.get('for_adults', None)
             library_branch = request.form.get('library_branch', None)
             category_names = request.form.get('category_names', None)
-            db.session.execute(
-                f"call add_new_book('{title}', '{author}', {for_adults}, {library_branch}, '{category_names}');")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"call add_new_book('{title}', '{author}', {for_adults}, {library_branch}, '{category_names}');")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
             id = request.form.get('id', None)
             author = request.form.get('author', None)
             for_adults = request.form.get('for_adults', None)
             title = request.form.get('title', None)
-            db.session.execute(
-                f"update books set author='{author}', for_adults={for_adults}, title='{title}' where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"update books set author='{author}', for_adults={for_adults}, title='{title}' where id={id};")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
             id = request.args.get('id', None)
             db.session.execute(f"delete from books where id={id};")
@@ -130,22 +137,28 @@ def create_app():
             book_instance_id = request.form.get('book_instance_id', None)
             start_time = request.form.get('start_time', None)
             end_time = request.form.get('end_time', None)
-            db.session.execute(
-                f"insert into borrowed (user_id, book_instance_id, start_time, end_time) " +
-                f"values ({user_id}, {book_instance_id}, '{start_time}', '{end_time}');")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"insert into borrowed (user_id, book_instance_id, start_time, end_time) " +
+                    f"values ({user_id}, {book_instance_id}, '{start_time}', '{end_time}');")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
             id = request.form.get('id', None)
             user_id = request.form.get('user_id', None)
             book_instance_id = request.form.get('book_instance_id', None)
             start_time = request.form.get('start_time', None)
             end_time = request.form.get('end_time', None)
-            db.session.execute(
-                f"update borrowed set user_id={user_id}, book_instance_id={book_instance_id}, " +
-                f"start_time='{start_time}', end_time='{end_time}' where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"update borrowed set user_id={user_id}, book_instance_id={book_instance_id}, " +
+                    f"start_time='{start_time}', end_time='{end_time}' where id={id};")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
             id = request.args.get('id', None)
             db.session.execute(f"delete from borrowed where id={id};")
@@ -177,17 +190,23 @@ def create_app():
     def category():
         if request.method == 'POST':
             category_name = request.form.get('category_name', None)
-            db.session.execute(
-                f"insert into categories (category_name) values ('{category_name}');")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"insert into categories (category_name) values ('{category_name}');")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
             id = request.form.get('id', None)
             category_name = request.form.get('category_name', None)
-            db.session.execute(
-                f"update categories set category_name='{category_name}' where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"update categories set category_name='{category_name}' where id={id};")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
             id = request.args.get('id', None)
             db.session.execute(f"delete from categories where id={id};")
@@ -213,20 +232,26 @@ def create_app():
         if request.method == 'POST':
             address = request.form.get('address', None)
             library_branch_name = request.form.get('library_branch_name', None)
-            db.session.execute(
-                f"insert into library_branches (address,library_branch_name) " +
-                f"values ('{address}', '{library_branch_name}');")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"insert into library_branches (address,library_branch_name) " +
+                    f"values ('{address}', '{library_branch_name}');")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
             id = request.form.get('id', None)
             address = request.form.get('address', None)
             library_branch_name = request.form.get('library_branch_name', None)
-            db.session.execute(
-                f"update library_branches set address='{address}', library_branch_name='{library_branch_name}'" +
-                f" where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"update library_branches set address='{address}', library_branch_name='{library_branch_name}'" +
+                    f" where id={id};")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
             id = request.args.get('id', None)
             db.session.execute(f"delete from library_branches where id={id};")
@@ -265,11 +290,14 @@ def create_app():
             password = generate_password_hash(request.form.get('password', None))
             birth_date = request.form.get('birth_date', None)
             user_type = request.form.get('user_type', None)
-            db.session.execute(
-                f"update users set name='{name}', surname='{surname}', login='{login}', " +
-                f"password='{password}', birth_date='{birth_date}', user_type='{user_type}' where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"update users set name='{name}', surname='{surname}', login='{login}', " +
+                    f"password='{password}', birth_date='{birth_date}', user_type='{user_type}' where id={id};")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
             id = request.args.get('id', None)
             db.session.execute(f"delete from users where id={id};")
@@ -285,11 +313,14 @@ def create_app():
             password = generate_password_hash(request.form.get('password', None))
             birth_date = request.form.get('birth_date', None)
             user_type = request.form.get('user_type', None)
-            db.session.execute(
-                f"insert into users (name,surname,login,password,birth_date,user_type) " +
-                f"values ('{name}', '{surname}', '{login}', '{password}', '{birth_date}', '{user_type}');")
-            db.session.commit()
-            return {"status": "OK"}
+            try:
+                db.session.execute(
+                    f"insert into users (name,surname,login,password,birth_date,user_type) " +
+                    f"values ('{name}', '{surname}', '{login}', '{password}', '{birth_date}', '{user_type}');")
+                db.session.commit()
+                return {"status": "OK"}
+            except IntegrityError as e:
+                return {"error": f"{e.orig}"}, 500
 
     @app.route('/penalty', methods=['GET'])
     @auth.login_required
