@@ -291,6 +291,13 @@ def create_app():
             db.session.commit()
             return {"status": "OK"}
 
+    @app.route('/penalty', methods=['GET'])
+    @auth.login_required
+    def penalty():
+        login = request.form.get('login', None)
+        result = query_to_dict(db.session.execute(f"call calculate_cash_penalty('{login}');"))
+        return jsonify(result)
+
     @app.route('/users/user', methods=['GET'])
     @auth.login_required
     def get_users_user():

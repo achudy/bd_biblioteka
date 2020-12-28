@@ -110,6 +110,16 @@ Example usage:
 
 Gets you only the user with login "achudy"
 
+#### GET /penalty
+Basic authentication:
+* login
+* password
+
+Form data: 
+* login (str)
+
+Gets you a penalty for a user.
+
 
 ## POST
 
