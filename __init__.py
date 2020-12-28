@@ -245,24 +245,24 @@ def create_app():
         if request.method == 'GET':
             result = query_to_dict(db.session.execute('select * from users;'))
             return jsonify(result)
-        if request.method == 'POST':
-            name = request.form.get('name', None)
-            surname = request.form.get('surname', None)
-            login = request.form.get('login', None)
-            password = generate_password_hash(request.form.get('password', None))
-            birth_date = request.form.get('birth_date', None)
-            user_type = request.form.get('user_type', None)
-            db.session.execute(
-                f"insert into users (name,surname,login,password,birth_date,user_type) " +
-                f"values ('{name}', '{surname}', '{login}', '{password}', '{birth_date}', '{user_type}');")
-            db.session.commit()
-            return {"status": "OK"}
+        # if request.method == 'POST':
+        #     name = request.form.get('name', None)
+        #     surname = request.form.get('surname', None)
+        #     login = request.form.get('login', None)
+        #     password = generate_password_hash(request.form.get('password', None))
+        #     birth_date = request.form.get('birth_date', None)
+        #     user_type = request.form.get('user_type', None)
+        #     db.session.execute(
+        #         f"insert into users (name,surname,login,password,birth_date,user_type) " +
+        #         f"values ('{name}', '{surname}', '{login}', '{password}', '{birth_date}', '{user_type}');")
+        #     db.session.commit()
+        #     return {"status": "OK"}
         if request.method == 'PUT':
             id = request.form.get('id', None)
             name = request.form.get('name', None)
             surname = request.form.get('surname', None)
             login = request.form.get('login', None)
-            password = request.form.get('password', None)
+            password = generate_password_hash(request.form.get('password', None))
             birth_date = request.form.get('birth_date', None)
             user_type = request.form.get('user_type', None)
             db.session.execute(
@@ -273,6 +273,21 @@ def create_app():
         if request.method == 'DELETE':
             id = request.args.get('id', None)
             db.session.execute(f"delete from users where id={id};")
+            db.session.commit()
+            return {"status": "OK"}
+
+    @app.route('/register', methods=['POST'])
+    def register():
+        if request.method == 'POST':
+            name = request.form.get('name', None)
+            surname = request.form.get('surname', None)
+            login = request.form.get('login', None)
+            password = generate_password_hash(request.form.get('password', None))
+            birth_date = request.form.get('birth_date', None)
+            user_type = request.form.get('user_type', None)
+            db.session.execute(
+                f"insert into users (name,surname,login,password,birth_date,user_type) " +
+                f"values ('{name}', '{surname}', '{login}', '{password}', '{birth_date}', '{user_type}');")
             db.session.commit()
             return {"status": "OK"}
 

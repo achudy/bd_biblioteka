@@ -113,6 +113,18 @@ Gets you only the user with login "achudy"
 
 ## POST
 
+#### POST /register
+
+Form data: 
+* name (str)
+* surname (str)
+* login (str)
+* password (str)
+* birth_date (date)
+* user_type (str)
+
+Registers a user.
+
 #### POST /book
 Basic authentication:
 * login
@@ -161,20 +173,6 @@ Form data:
 
 Posts a library branch.
 
-#### POST /users
-Basic authentication:
-* login
-* password
-
-Form data: 
-* name (str)
-* surname (str)
-* login (str)
-* password (str)
-* birth_date (date)
-* user_type (str)
-
-Posts a user.
 
 ## PUT
 
