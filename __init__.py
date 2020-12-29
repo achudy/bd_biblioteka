@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
 
 
 def query_to_dict(ret):
@@ -19,6 +20,8 @@ def create_app():
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.config['JSON_AS_ASCII'] = False
 
+    cors = CORS(app)
+
     auth = HTTPBasicAuth()
     db = SQLAlchemy(app)
 
@@ -33,7 +36,9 @@ def create_app():
     @app.route('/authtest', methods=['GET'])
     @auth.login_required
     def test():
-        return "success"
+        is_admin = query_to_dict(db.session.execute(
+            f"select user_type from users where login='{auth.username()}';"))
+        return jsonify(is_admin[0])
 
     @app.route('/', methods=['GET'])
     def this_is_library():
