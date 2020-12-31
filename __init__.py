@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
+import re
 
 
 def query_to_dict(ret):
@@ -11,6 +12,55 @@ def query_to_dict(ret):
         return [{key: value for key, value in row.items()} for row in ret if row is not None]
     else:
         return []
+
+
+def letters_numbers_spaces_special_check(string):
+    string = str(string)
+    if bool(re.match(r"[a-zA-Z0-9! #$%^&*={}:<>',.ąćęłńóśźżĄĆĘŁŃÓŚŹŻ-]{0,254}", string, re.UNICODE)) and bool(
+            re.match(r"^((?!;).)*$", string, re.UNICODE)) and bool(
+        re.match(r"^((?!@).)*$", string, re.UNICODE)):
+        # re.match(r"^((?!-).)*$", string, re.UNICODE)) and bool(
+        return True
+    else:
+        return False
+
+
+def letters_numbers_check(string):
+    string = str(string)
+    if bool(re.match(r"[a-zA-Z0-9]{0,64}", string, re.UNICODE)) and bool(
+            re.match(r"^((?!;).)*$", string, re.UNICODE)) and bool(
+        re.match(r"^((?!@).)*$", string, re.UNICODE)) and bool(
+        re.match(r"^((?!-).)*$", string, re.UNICODE)):
+        return True
+    else:
+        return False
+
+
+def numbers_check(number):
+    if bool(re.match(r"[0-9]{0,64}", number, re.UNICODE)) and bool(
+            re.match(r"^((?!;).)*$", number, re.UNICODE)) and bool(
+        re.match(r"^((?!-).)*$", number, re.UNICODE)) and bool(
+        re.match(r"^((?!@).)*$", number, re.UNICODE)):
+        return True
+    else:
+        return False
+
+
+def date_check(number):
+    if bool(re.match(r"[1-2][09][0-9][0-9][./-][01][0-9][./-][0123][0-9]", number, re.UNICODE)) and bool(
+            re.match(r"^((?!;).)*$", number, re.UNICODE)) and bool(
+        re.match(r"^((?!@).)*$", number, re.UNICODE)):
+        return True
+    else:
+        return False
+
+
+def one_or_zero_check(number):
+    number = int(number)
+    if number == 1 or number == 0:
+        return True
+    else:
+        return False
 
 
 def create_app():
@@ -25,8 +75,24 @@ def create_app():
     auth = HTTPBasicAuth()
     db = SQLAlchemy(app)
 
+    def delete_by_id(column):
+        id_arg = request.args.get('id', None)
+        # Regexp
+        if not numbers_check(str(id_arg)):
+            return {"error": "Wrong input arguments"}, 500
+        # Function
+        db.session.execute(f"delete from {column} where id={id_arg};")
+        db.session.commit()
+        return {"status": "OK"}
+
     @auth.verify_password
     def verify_password(username, password):
+        # Regexp check
+        if not letters_numbers_check(username):
+            return False
+        if not letters_numbers_spaces_special_check(password):
+            return False
+        # Function
         login_and_password = query_to_dict(db.session.execute(
             f"select login, password from users where login='{username}';"))
         if login_and_password:
@@ -53,15 +119,21 @@ def create_app():
     @app.route('/book', methods=['POST', 'PUT', 'DELETE'])
     @auth.login_required
     def book():
-        if request.method == 'GET':
-            result = query_to_dict(db.session.execute('select * from books;'))
-            return jsonify(result)
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
+            return {"error": "Unauthorized access"}, 401
         if request.method == 'POST':
             title = request.form.get('title', None)
             author = request.form.get('author', None)
             for_adults = request.form.get('for_adults', None)
             library_branch = request.form.get('library_branch', None)
             category_names = request.form.get('category_names', None)
+            # Regexp
+            if letters_numbers_spaces_special_check(title) is not True or letters_numbers_spaces_special_check(
+                    author) is not True or one_or_zero_check(int(for_adults)) is not True or numbers_check(
+                str(library_branch)) is not True or letters_numbers_spaces_special_check(category_names) is not True:
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"call add_new_book('{title}', '{author}', {for_adults}, {library_branch}, '{category_names}');")
@@ -70,61 +142,68 @@ def create_app():
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
-            id = request.form.get('id', None)
+            id_arg = request.form.get('id', None)
             author = request.form.get('author', None)
             for_adults = request.form.get('for_adults', None)
             title = request.form.get('title', None)
+            # Regexp
+            if not letters_numbers_spaces_special_check(title) or not letters_numbers_spaces_special_check(
+                    author) or not one_or_zero_check(for_adults) or not numbers_check(str(id_arg)):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
-                    f"update books set author='{author}', for_adults={for_adults}, title='{title}' where id={id};")
+                    f"update books set author='{author}', for_adults={for_adults}, title='{title}' where id={id_arg};")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
+            except OperationalError as e2:
+                return {"error": f"{e2.orig}"}, 500
         if request.method == 'DELETE':
-            id = request.args.get('id', None)
-            db.session.execute(f"delete from books where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            return delete_by_id("books")
 
     @app.route('/books/filter', methods=['GET'])
     def book_id():
-        id = request.args.get('id', None)
-        title = request.args.get('title', None)
-        # category = request.args.get('category', None)
-        author = request.args.get('author', None)
-
-        query = 'select * from books where '
-        and_specifier = False
-        if id is not None:
-            query += f'id={id} '
-            and_specifier = True
-        if title is not None:
-            if and_specifier:
-                query += 'and '
-            filtered = "'%%" + title + "%%'"
-            query += f'title like {filtered} '
-            and_specifier = True
-        if author is not None:
-            if and_specifier:
-                query += 'and '
-            filtered = "'%%" + author + "%%'"
-            query += f'author like {filtered} '
-            # and_specifier = True
-        # if category is not None:
-        #     if and_specifier:
-        #         query += 'and '
-        #     query += f'fk_category_id = {category} '
-        #     # and_specifier = True
-        query += ';'
+        id_arg = request.args.get('id', None)
+        print(request.query_string)
+        # Regexp
+        if not numbers_check(str(id_arg)):
+            return {"error": "Wrong input arguments"}, 500
+        # Function
+        if id_arg is not None:
+            query = f'select * from books where id={id_arg};'
+        else:
+            title = request.form.get('title', 'null')
+            if title != 'null':
+                title = f"'{title}'"
+            cat = request.form.get('category', 'null')
+            if cat != 'null':
+                cat = f"'{cat}'"
+            author = request.form.get('author', 'null')
+            if author != 'null':
+                author = f"'{author}'"
+            # Regexp
+            if not letters_numbers_spaces_special_check(title) or not letters_numbers_spaces_special_check(
+                    author) or not letters_numbers_spaces_special_check(cat):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
+            query = f"call get_books_filter({title},{author},{cat});"
 
         result = query_to_dict(db.session.execute(query))
         return jsonify(result)
 
     @app.route('/availability', methods=['GET'])
     def get_availability():
-        title = request.args.get('title', None)
-        author = request.args.get('author', None)
+        title = request.form.get('title', None)
+        print(title)
+        author = request.form.get('author', None)
+        print(author)
+        # Regexp
+        if not letters_numbers_spaces_special_check(title) or not letters_numbers_spaces_special_check(
+                author):
+            return {"error": "Wrong input arguments"}, 500
+        # Function
         result = query_to_dict(db.session.execute(f"CALL check_availability('{title}', '{author}');"))
         return jsonify(result)
 
@@ -137,11 +216,19 @@ def create_app():
     @app.route('/borrowed', methods=['POST', 'PUT', 'DELETE'])
     @auth.login_required
     def borrowed():
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
+            return {"error": "Unauthorized access"}, 401
         if request.method == 'POST':
             user_id = request.form.get('user_id', None)
             book_instance_id = request.form.get('book_instance_id', None)
             start_time = request.form.get('start_time', None)
             end_time = request.form.get('end_time', None)
+            # Regexp
+            if not numbers_check(user_id) or not numbers_check(book_instance_id) or not date_check(
+                    str(start_time)) or not date_check(str(end_time)):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"insert into borrowed (user_id, book_instance_id, start_time, end_time) " +
@@ -151,37 +238,59 @@ def create_app():
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
-            id = request.form.get('id', None)
+            id_arg = request.form.get('id', None)
             user_id = request.form.get('user_id', None)
             book_instance_id = request.form.get('book_instance_id', None)
             start_time = request.form.get('start_time', None)
             end_time = request.form.get('end_time', None)
+            # Regexp
+            if not numbers_check(str(id_arg)) or not numbers_check(user_id) or not numbers_check(
+                    book_instance_id) or not date_check(
+                str(start_time)) or not date_check(str(end_time)):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"update borrowed set user_id={user_id}, book_instance_id={book_instance_id}, " +
-                    f"start_time='{start_time}', end_time='{end_time}' where id={id};")
+                    f"start_time='{start_time}', end_time='{end_time}' where id={id_arg};")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
+            except OperationalError:
+                return {"error": "Unable to borrow this book, it is probably borrowed already"}, 500
         if request.method == 'DELETE':
-            id = request.args.get('id', None)
-            db.session.execute(f"delete from borrowed where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            return delete_by_id("borrowed")
 
     @app.route('/borrowed/user', methods=['GET'])
     @auth.login_required
     def get_borrowed_user():
-        login = request.args.get('login', None)
+        print(query_to_dict(db.session.execute(f"select user_type from users where login='{auth.username()}';"))[0][
+                  "user_type"])
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] == "admin":
+            login = request.form.get('login', auth.username())
+            # Regexp
+            if not letters_numbers_check(login):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
+        else:
+            login = auth.username()
         result = query_to_dict(db.session.execute(f"CALL get_users_books('{login}');"))
         return jsonify(result)
 
     @app.route('/borrowed/id', methods=['GET'])
     @auth.login_required
     def get_borrowed_id():
-        id = request.args.get('id', None)
-        result = query_to_dict(db.session.execute(f"select * from borrowed where id={id};"))
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
+            return {"error": "Unauthorized access"}, 401
+        id_arg = request.args.get('id', None)
+        # Regexp
+        if not numbers_check(str(id_arg)):
+            return {"error": "Wrong input arguments"}, 500
+        # Function
+        result = query_to_dict(db.session.execute(f"select * from borrowed where id={id_arg};"))
         return jsonify(result)
 
     @app.route('/categories', methods=['GET'])
@@ -193,8 +302,15 @@ def create_app():
     @app.route('/category', methods=['POST', 'PUT', 'DELETE'])
     @auth.login_required
     def category():
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
+            return {"error": "Unauthorized access"}, 401
         if request.method == 'POST':
             category_name = request.form.get('category_name', None)
+            # Regexp
+            if not letters_numbers_spaces_special_check(category_name):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"insert into categories (category_name) values ('{category_name}');")
@@ -203,25 +319,30 @@ def create_app():
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
-            id = request.form.get('id', None)
+            id_arg = request.form.get('id', None)
             category_name = request.form.get('category_name', None)
+            # Regexp
+            if not numbers_check(str(id_arg)) or not letters_numbers_spaces_special_check(category_name):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
-                    f"update categories set category_name='{category_name}' where id={id};")
+                    f"update categories set category_name='{category_name}' where id={id_arg};")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
-            id = request.args.get('id', None)
-            db.session.execute(f"delete from categories where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            return delete_by_id("categories")
 
     @app.route('/categories/book', methods=['GET'])
     def get_categories_book():
-        title = request.args.get('title', None)
-        author = request.args.get('author', None)
+        title = request.form.get('title', None)
+        author = request.form.get('author', None)
+        # Regexp
+        if not letters_numbers_spaces_special_check(title) or not letters_numbers_spaces_special_check(author):
+            return {"error": "Wrong input arguments"}, 500
+        # Function
         result = query_to_dict(db.session.execute(f"CALL get_category_of_book('{title}', '{author}');"))
         return jsonify(result)
 
@@ -234,9 +355,17 @@ def create_app():
     @app.route('/branch', methods=['POST', 'PUT', 'DELETE'])
     @auth.login_required
     def branch():
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
+            return {"error": "Unauthorized access"}, 401
         if request.method == 'POST':
             address = request.form.get('address', None)
             library_branch_name = request.form.get('library_branch_name', None)
+            # Regexp
+            if not letters_numbers_spaces_special_check(address) or not letters_numbers_spaces_special_check(
+                    library_branch_name):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"insert into library_branches (address,library_branch_name) " +
@@ -246,68 +375,69 @@ def create_app():
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
         if request.method == 'PUT':
-            id = request.form.get('id', None)
+            id_arg = request.form.get('id', None)
             address = request.form.get('address', None)
             library_branch_name = request.form.get('library_branch_name', None)
+            # Regexp
+            if not numbers_check(str(id_arg)) or not letters_numbers_spaces_special_check(
+                    address) or not letters_numbers_spaces_special_check(library_branch_name):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"update library_branches set address='{address}', library_branch_name='{library_branch_name}'" +
-                    f" where id={id};")
+                    f" where id={id_arg};")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
-            id = request.args.get('id', None)
-            db.session.execute(f"delete from library_branches where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            return delete_by_id("library_branches")
 
     @app.route('/branches/id', methods=['GET'])
     def get_branches_id():
-        id = request.args.get('id', None)
-        result = query_to_dict(db.session.execute(f"select * from library_branches where id={id};"))
+        id_arg = request.args.get('id', None)
+        # Regexp
+        if not numbers_check(str(id_arg)):
+            return {"error": "Wrong input arguments"}, 500
+        # Function
+        result = query_to_dict(db.session.execute(f"select * from library_branches where id={id_arg};"))
         return jsonify(result)
 
     @app.route('/users', methods=['GET', 'POST', 'PUT', 'DELETE'])
     @auth.login_required
     def get_users():
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
+            return {"error": "Unauthorized access"}, 401
         if request.method == 'GET':
             result = query_to_dict(db.session.execute('select * from users;'))
             return jsonify(result)
-        # if request.method == 'POST':
-        #     name = request.form.get('name', None)
-        #     surname = request.form.get('surname', None)
-        #     login = request.form.get('login', None)
-        #     password = generate_password_hash(request.form.get('password', None))
-        #     birth_date = request.form.get('birth_date', None)
-        #     user_type = request.form.get('user_type', None)
-        #     db.session.execute(
-        #         f"insert into users (name,surname,login,password,birth_date,user_type) " +
-        #         f"values ('{name}', '{surname}', '{login}', '{password}', '{birth_date}', '{user_type}');")
-        #     db.session.commit()
-        #     return {"status": "OK"}
         if request.method == 'PUT':
-            id = request.form.get('id', None)
+            id_arg = request.form.get('id', None)
             name = request.form.get('name', None)
             surname = request.form.get('surname', None)
             login = request.form.get('login', None)
             password = generate_password_hash(request.form.get('password', None))
             birth_date = request.form.get('birth_date', None)
             user_type = request.form.get('user_type', None)
+            # Regexp
+            if not numbers_check(str(id_arg)) or not letters_numbers_spaces_special_check(
+                    name) or not letters_numbers_spaces_special_check(surname) or not letters_numbers_check(
+                login) or not letters_numbers_spaces_special_check(password) or not date_check(
+                str(birth_date)) or not letters_numbers_check(user_type):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"update users set name='{name}', surname='{surname}', login='{login}', " +
-                    f"password='{password}', birth_date='{birth_date}', user_type='{user_type}' where id={id};")
+                    f"password='{password}', birth_date='{birth_date}', user_type='{user_type}' where id={id_arg};")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
         if request.method == 'DELETE':
-            id = request.args.get('id', None)
-            db.session.execute(f"delete from users where id={id};")
-            db.session.commit()
-            return {"status": "OK"}
+            return delete_by_id("users")
 
     @app.route('/register', methods=['POST'])
     def register():
@@ -318,6 +448,13 @@ def create_app():
             password = generate_password_hash(request.form.get('password', None))
             birth_date = request.form.get('birth_date', None)
             user_type = request.form.get('user_type', None)
+            # Regexp
+            if not letters_numbers_spaces_special_check(
+                    name) or not letters_numbers_spaces_special_check(surname) or not letters_numbers_check(
+                login) or not letters_numbers_spaces_special_check(password) or not date_check(
+                str(birth_date)) or not letters_numbers_check(user_type):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
             try:
                 db.session.execute(
                     f"insert into users (name,surname,login,password,birth_date,user_type) " +
@@ -330,14 +467,33 @@ def create_app():
     @app.route('/penalty', methods=['GET'])
     @auth.login_required
     def penalty():
-        login = request.form.get('login', None)
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] == "admin":
+            login = request.form.get('login', auth.username())
+            # Regexp
+            if not letters_numbers_check(login):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
+        else:
+            login = auth.username()
+        print(login)
         result = query_to_dict(db.session.execute(f"call calculate_cash_penalty('{login}');"))
         return jsonify(result)
 
     @app.route('/users/user', methods=['GET'])
     @auth.login_required
     def get_users_user():
-        login = request.args.get('login', None)
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] == "admin":
+            login = request.form.get('login', auth.username())
+            # Regexp
+            if not letters_numbers_check(login):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
+        else:
+            print("no")
+            login = auth.username()
+
         result = query_to_dict(db.session.execute(f"select * from users where login='{login}';"))
         return jsonify(result)
 

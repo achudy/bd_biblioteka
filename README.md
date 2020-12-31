@@ -18,21 +18,25 @@ Gets you all the books.
 #### GET /books/filter
 Parameters:
 * id (int)
+  
+Form data:
 * title (str)
 * author (str)
+* category (str)
 
 Example usage:
-* /books/filter?title=ci&author=pa
+* /books/filter?id=1
+* books/filter -d "author=das&title=mmmmm"
 
-Gets you only the books with "cip" in the title and "pa" in author's name.
+Gets you only the books with "cip" in the title and "pa" in the author's name.
 
 #### GET /availability
-Parameters:
+Form data:
 * title (str)
 * author (str)
 
 Example usage:
-* /availability?title=Solaris&author=Stanisław%20Lem
+* /availability -d "title=Solaris&author=Stanisław%20Lem"
 
 Gets you the availability of Stanisław Lem's "Solaris"
 
@@ -44,13 +48,13 @@ Basic authentication:
 * login
 * password
 
-Parameters:
+Form data:
 * login (str)
 
 Example usage:
-* /borrowed/user?login=achudy 
+* /borrowed/user -d "login=achudy"
 
-Gets you all books borrowed by the user with login "achudy"
+Gets you all books borrowed by the user with login "achudy". If not admin, will only see info about himself.
 
 #### GET /borrowed/id
 Basic authentication:
@@ -63,18 +67,18 @@ Parameters:
 Example usage:
 * /borrowed/id?id=1 
 
-Gets you the borrowed book with id=1
+Gets you the borrowed book with an id=1
 
 #### GET /categories 
 Gets you all the categories of books.
 
 #### GET /categories/book
-Parameters:
+Form data:
 * title (str)
 * author (str)
 
 Example usage:
-* /categories/book?title=Coś%20się%20kończy,%20coś%20się%20zaczyna&author=Andrzej%20Sapkowski
+* /categories/book -d "title=Coś%20się%20kończy,%20coś%20się%20zaczyna&author=Andrzej%20Sapkowski"
 
 Gets you the category of Andrzej Sapkowski's "C.s.k.c.s.z."
 
@@ -102,13 +106,13 @@ Basic authentication:
 * login
 * password
 
-Parameters:
+Form data:
 * login (str)
 
 Example usage:
-* /users/user?login=achudy 
+* /users/user -d "login=achudy"
 
-Gets you only the user with login "achudy"
+Gets you only the user with login "achudy". If not admin, will only see info about himself.
 
 #### GET /penalty
 Basic authentication:
@@ -118,7 +122,7 @@ Basic authentication:
 Form data: 
 * login (str)
 
-Gets you a penalty for a user.
+Gets you a penalty for a user. If not admin, will only see info about himself.
 
 
 ## POST
