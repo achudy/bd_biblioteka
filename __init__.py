@@ -166,7 +166,6 @@ def create_app():
     @app.route('/books/filter', methods=['GET'])
     def book_id():
         id_arg = request.args.get('id', None)
-        print(request.query_string)
         # Regexp
         if not numbers_check(str(id_arg)):
             return {"error": "Wrong input arguments"}, 500
@@ -196,9 +195,7 @@ def create_app():
     @app.route('/availability', methods=['GET'])
     def get_availability():
         title = request.form.get('title', None)
-        print(title)
         author = request.form.get('author', None)
-        print(author)
         # Regexp
         if not letters_numbers_spaces_special_check(title) or not letters_numbers_spaces_special_check(
                 author):
@@ -265,8 +262,6 @@ def create_app():
     @app.route('/borrowed/user', methods=['GET'])
     @auth.login_required
     def get_borrowed_user():
-        print(query_to_dict(db.session.execute(f"select user_type from users where login='{auth.username()}';"))[0][
-                  "user_type"])
         if query_to_dict(db.session.execute(
                 f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] == "admin":
             login = request.form.get('login', auth.username())
@@ -476,9 +471,8 @@ def create_app():
             # Function
         else:
             login = auth.username()
-        print(login)
         result = query_to_dict(db.session.execute(f"call calculate_cash_penalty('{login}');"))
-        return jsonify(result)
+        return {"penalty in PLN": float(result[0]["penalty in PLN"])}, 200
 
     @app.route('/users/user', methods=['GET'])
     @auth.login_required
@@ -491,10 +485,10 @@ def create_app():
                 return {"error": "Wrong input arguments"}, 500
             # Function
         else:
-            print("no")
             login = auth.username()
 
         result = query_to_dict(db.session.execute(f"select * from users where login='{login}';"))
+        print(result[0])
         return jsonify(result)
 
     return app
