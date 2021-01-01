@@ -4,16 +4,16 @@ curl -X GET 127.0.0.1:5000/books
 curl -X POST -u testowy:testowy -d "title=Książka%20testowa&author=ĄŻdas%20DFS-fsda&for_adults=0&library_branch=1&category_names=inne,przygodowe" 127.0.0.1:5000/book
 curl -X POST -u testowy:testowy -d "title=Książka%20testowa2&author=ĄŻdas%20DFS-fsda&for_adults=0&library_branch=1&category_names=inne,przygodowe" 127.0.0.1:5000/book
 curl -X GET 127.0.0.1:5000/books/filter?id=38
-curl -X GET 127.0.0.1:5000/books/filter -d "author=das"
-curl -X GET 127.0.0.1:5000/books/filter -d "category=inne"
-curl -X GET 127.0.0.1:5000/books/filter -d "title=ąż"
+curl -X GET 127.0.0.1:5000/books/filter?author=das
+curl -X GET 127.0.0.1:5000/books/filter?category=inne
+curl -X GET 127.0.0.1:5000/books/filter?title=ksi
 curl -X PUT -u testowy:testowy -d "id=38&title=mmmmmmmm&author=ĄŻdas%20DFS-fsda&for_adults=0" 127.0.0.1:5000/book
-curl -X GET 127.0.0.1:5000/books/filter -d "author=das&title=mmmmm"
+curl -X GET "127.0.0.1:5000/books/filter?author=das&title=mmmmm"
 curl -X DELETE -u testowy:testowy 127.0.0.1:5000/book?id=38
 curl -X DELETE -u testowy:testowy 127.0.0.1:5000/book?id=39
 curl -X POST -u testowy:testowy -d "title=tsts%20tsts&author=tsts&for_adults=0&library_branch=1&category_names=inne" 127.0.0.1:5000/book
-curl -X GET 127.0.0.1:5000/availability -d "title=tsts&author=tsts"
-curl -X GET 127.0.0.1:5000/availability -d "title=Solaris&author=Stanisław%20Lem"
+curl -X GET "127.0.0.1:5000/availability?title=tsts%20tsts&author=tsts"
+curl -X GET 127.0.0.1:5000/availability?title=Solaris&author=Stanisław%20Lem
 curl -X GET 127.0.0.1:5000/borroweds
 curl -X POST -u testowy:testowy -d "user_id=39&book_instance_id=49&start_time=2021-01-01&end_time=2022-01-01" 127.0.0.1:5000/borrowed
 curl -X PUT -u testowy:testowy -d "id=16&user_id=39&book_instance_id=49&start_time=2021-01-01&end_time=2023-01-01" 127.0.0.1:5000/borrowed
@@ -29,7 +29,7 @@ curl -X PUT -u testowy:testowy -d "id=20&category_name=testowa2" 127.0.0.1:5000/
 curl -X GET 127.0.0.1:5000/categories
 curl -X DELETE -u testowy:testowy 127.0.0.1:5000/category?id=20
 curl -X GET 127.0.0.1:5000/categories
-curl -X GET 127.0.0.1:5000/categories/book -d "title=Coś%20się%20kończy,%20coś%20się%20zaczyna&author=Andrzej%20Sapkowski"
+curl -X GET "127.0.0.1:5000/categories/book?title=Cos%20sie%20konczy,%20cos%20sie%20zaczyna&author=Andrzej%20Sapkowski"
 curl -X GET 127.0.0.1:5000/branches
 curl -X POST -u testowy:testowy -d "address=testowy&library_branch_name=test" 127.0.0.1:5000/branch
 curl -X GET 127.0.0.1:5000/branches
@@ -41,7 +41,7 @@ curl -X GET 127.0.0.1:5000/branches/id?id=1
 curl -X GET -u testowy:testowy 127.0.0.1:5000/users
 curl -X PUT -u testowy:testowy -d "name=johnny&surname=testowy&login=testowy&password=testowy&birth_date=1998-12-12&user_type=admin&id=40" 127.0.0.1:5000/users
 curl -X GET -u testowy:testowy 127.0.0.1:5000/penalty
-curl -X GET -u testowy:testowy 127.0.0.1:5000/penalty -d "login=Hard%20Water04"
-curl -X GET -u testowy:testowy 127.0.0.1:5000/users/user -d "login=Hard%20Water04"
+curl -X GET -u testowy:testowy 127.0.0.1:5000/penalty?login=Hard%20Water04
+curl -X GET -u testowy:testowy 127.0.0.1:5000/users/user?login=Hard%20Water04
 curl -X GET -u testowy:testowy 127.0.0.1:5000/users/user
 curl -X DELETE -u testowy:testowy 127.0.0.1:5000/users?id=40

@@ -18,25 +18,22 @@ Gets you all the books.
 #### GET /books/filter
 Parameters:
 * id (int)
-  
-Form data:
 * title (str)
 * author (str)
 * category (str)
 
 Example usage:
 * /books/filter?id=1
-* books/filter -d "author=das&title=mmmmm"
 
 Gets you only the books with "cip" in the title and "pa" in the author's name.
 
 #### GET /availability
-Form data:
+Parameters:
 * title (str)
 * author (str)
 
 Example usage:
-* /availability -d "title=Solaris&author=Stanisław%20Lem"
+* /availability?title=Solaris&author=Stanislaw%20Lem
 
 Gets you the availability of Stanisław Lem's "Solaris"
 
@@ -48,11 +45,11 @@ Basic authentication:
 * login
 * password
 
-Form data:
+Parameters:
 * login (str)
 
 Example usage:
-* /borrowed/user -d "login=achudy"
+* /borrowed/user?login=achudy"
 
 Gets you all books borrowed by the user with login "achudy". If not admin, will only see info about himself.
 
@@ -73,12 +70,12 @@ Gets you the borrowed book with an id=1
 Gets you all the categories of books.
 
 #### GET /categories/book
-Form data:
+Parameters:
 * title (str)
 * author (str)
 
 Example usage:
-* /categories/book -d "title=Coś%20się%20kończy,%20coś%20się%20zaczyna&author=Andrzej%20Sapkowski"
+* /categories/book?title=Cos%20sie%20konczy,%20cos%20sie%20zaczyna&author=Andrzej%20Sapkowski
 
 Gets you the category of Andrzej Sapkowski's "C.s.k.c.s.z."
 
@@ -106,11 +103,11 @@ Basic authentication:
 * login
 * password
 
-Form data:
+Parameters:
 * login (str)
 
 Example usage:
-* /users/user -d "login=achudy"
+* /users/user?login=achudy
 
 Gets you only the user with login "achudy". If not admin, will only see info about himself.
 
@@ -119,7 +116,7 @@ Basic authentication:
 * login
 * password
 
-Form data: 
+Parameters: 
 * login (str)
 
 Gets you a penalty for a user. If not admin, will only see info about himself.

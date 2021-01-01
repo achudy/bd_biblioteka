@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import re
 
-
 def query_to_dict(ret):
     if ret is not None:
         return [{key: value for key, value in row.items()} for row in ret if row is not None]
@@ -123,11 +122,11 @@ def create_app():
                 f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
             return {"error": "Unauthorized access"}, 401
         if request.method == 'POST':
-            title = request.form.get('title', None)
-            author = request.form.get('author', None)
-            for_adults = request.form.get('for_adults', None)
-            library_branch = request.form.get('library_branch', None)
-            category_names = request.form.get('category_names', None)
+            title = request.args.get('title', None)
+            author = request.args.get('author', None)
+            for_adults = request.args.get('for_adults', None)
+            library_branch = request.args.get('library_branch', None)
+            category_names = request.args.get('category_names', None)
             # Regexp
             if letters_numbers_spaces_special_check(title) is not True or letters_numbers_spaces_special_check(
                     author) is not True or one_or_zero_check(int(for_adults)) is not True or numbers_check(
@@ -173,13 +172,13 @@ def create_app():
         if id_arg is not None:
             query = f'select * from books where id={id_arg};'
         else:
-            title = request.form.get('title', 'null')
+            title = request.args.get('title', 'null')
             if title != 'null':
                 title = f"'{title}'"
-            cat = request.form.get('category', 'null')
+            cat = request.args.get('category', 'null')
             if cat != 'null':
                 cat = f"'{cat}'"
-            author = request.form.get('author', 'null')
+            author = request.args.get('author', 'null')
             if author != 'null':
                 author = f"'{author}'"
             # Regexp
@@ -194,8 +193,8 @@ def create_app():
 
     @app.route('/availability', methods=['GET'])
     def get_availability():
-        title = request.form.get('title', None)
-        author = request.form.get('author', None)
+        title = request.args.get('title', None)
+        author = request.args.get('author', None)
         # Regexp
         if not letters_numbers_spaces_special_check(title) or not letters_numbers_spaces_special_check(
                 author):
@@ -264,7 +263,7 @@ def create_app():
     def get_borrowed_user():
         if query_to_dict(db.session.execute(
                 f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] == "admin":
-            login = request.form.get('login', auth.username())
+            login = request.args.get('login', auth.username())
             # Regexp
             if not letters_numbers_check(login):
                 return {"error": "Wrong input arguments"}, 500
@@ -332,8 +331,8 @@ def create_app():
 
     @app.route('/categories/book', methods=['GET'])
     def get_categories_book():
-        title = request.form.get('title', None)
-        author = request.form.get('author', None)
+        title = request.args.get('title', None)
+        author = request.args.get('author', None)
         # Regexp
         if not letters_numbers_spaces_special_check(title) or not letters_numbers_spaces_special_check(author):
             return {"error": "Wrong input arguments"}, 500
@@ -464,7 +463,7 @@ def create_app():
     def penalty():
         if query_to_dict(db.session.execute(
                 f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] == "admin":
-            login = request.form.get('login', auth.username())
+            login = request.args.get('login', auth.username())
             # Regexp
             if not letters_numbers_check(login):
                 return {"error": "Wrong input arguments"}, 500
@@ -479,7 +478,7 @@ def create_app():
     def get_users_user():
         if query_to_dict(db.session.execute(
                 f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] == "admin":
-            login = request.form.get('login', auth.username())
+            login = request.args.get('login', auth.username())
             # Regexp
             if not letters_numbers_check(login):
                 return {"error": "Wrong input arguments"}, 500
@@ -488,7 +487,6 @@ def create_app():
             login = auth.username()
 
         result = query_to_dict(db.session.execute(f"select * from users where login='{login}';"))
-        print(result[0])
         return jsonify(result)
 
     return app
