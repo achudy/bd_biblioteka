@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import re
 
+
 def query_to_dict(ret):
     if ret is not None:
         return [{key: value for key, value in row.items()} for row in ret if row is not None]
@@ -232,6 +233,10 @@ def create_app():
                 return {"status": "OK"}
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
+            except OperationalError as err:
+                ids = str(err.orig).split("'")[1].split("'")[0]
+                return {"error": "User has leftover books, cannot borrow until those are returned",
+                        "ids": f"{ids}"}, 500
         if request.method == 'PUT':
             id_arg = request.form.get('id', None)
             user_id = request.form.get('user_id', None)
@@ -249,8 +254,10 @@ def create_app():
                 return {"status": "OK"}
             except IntegrityError as e:
                 return {"error": f"{e.orig}"}, 500
-            except OperationalError:
-                return {"error": "Unable to borrow this book, it is probably borrowed already"}, 500
+            except OperationalError as err:
+                ids = str(err.orig).split("'")[1].split("'")[0]
+                return {"error": "User has leftover books, cannot borrow until those are returned",
+                        "ids": f"{ids}"}, 500
         if request.method == 'DELETE':
             return delete_by_id("borrowed")
 
