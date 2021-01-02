@@ -36,6 +36,7 @@ def letters_numbers_check(string):
 
 
 def numbers_check(number):
+    number = str(number)
     if bool(re.match(r"[0-9]{0,64}", number, re.UNICODE)) and bool(
             re.match(r"^((?!;).)*$", number, re.UNICODE)) and bool(
         re.match(r"^((?!-).)*$", number, re.UNICODE)) and bool(
@@ -46,6 +47,7 @@ def numbers_check(number):
 
 
 def date_check(number):
+    number = str(number)
     if bool(re.match(r"[1-2][09][0-9][0-9][./-][01][0-9][./-][0123][0-9]", number, re.UNICODE)) and bool(
             re.match(r"^((?!;).)*$", number, re.UNICODE)) and bool(
         re.match(r"^((?!@).)*$", number, re.UNICODE)):
