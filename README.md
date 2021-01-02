@@ -158,8 +158,6 @@ Basic authentication:
 Form data: 
 * user_id (int)
 * book_instance_id (int)
-* start_time (date e.g. 2021-06-09)
-* end_time (date)
 
 Posts a borrowed record.
 
@@ -209,8 +207,6 @@ Form data:
 * id (int)
 * user_id (int)
 * book_instance_id (int)
-* start_time (date e.g. 2021-06-09)
-* end_time (date)
 
 Updates a borrowed record.
 

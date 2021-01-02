@@ -218,17 +218,14 @@ def create_app():
         if request.method == 'POST':
             user_id = request.form.get('user_id', None)
             book_instance_id = request.form.get('book_instance_id', None)
-            start_time = request.form.get('start_time', None)
-            end_time = request.form.get('end_time', None)
             # Regexp
-            if not numbers_check(user_id) or not numbers_check(book_instance_id) or not date_check(
-                    str(start_time)) or not date_check(str(end_time)):
+            if not numbers_check(user_id) or not numbers_check(book_instance_id):
                 return {"error": "Wrong input arguments"}, 500
             # Function
             try:
                 db.session.execute(
-                    f"insert into borrowed (user_id, book_instance_id, start_time, end_time) " +
-                    f"values ({user_id}, {book_instance_id}, '{start_time}', '{end_time}');")
+                    f"insert into borrowed (user_id, book_instance_id) " +
+                    f"values ({user_id}, {book_instance_id});")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
@@ -237,18 +234,15 @@ def create_app():
             id_arg = request.form.get('id', None)
             user_id = request.form.get('user_id', None)
             book_instance_id = request.form.get('book_instance_id', None)
-            start_time = request.form.get('start_time', None)
-            end_time = request.form.get('end_time', None)
             # Regexp
             if not numbers_check(str(id_arg)) or not numbers_check(user_id) or not numbers_check(
-                    book_instance_id) or not date_check(
-                str(start_time)) or not date_check(str(end_time)):
+                    book_instance_id):
                 return {"error": "Wrong input arguments"}, 500
             # Function
             try:
                 db.session.execute(
                     f"update borrowed set user_id={user_id}, book_instance_id={book_instance_id}, " +
-                    f"start_time='{start_time}', end_time='{end_time}' where id={id_arg};")
+                    f" where id={id_arg};")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
