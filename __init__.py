@@ -165,6 +165,23 @@ def create_app():
         if request.method == 'DELETE':
             return delete_by_id("books")
 
+    @app.route('/bookinstance', methods=['DELETE'])
+    @auth.login_required
+    def bookinstance():
+        if query_to_dict(db.session.execute(
+                f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
+            return {"error": "Unauthorized access"}, 401
+        if request.method == 'DELETE':
+            id_arg = request.args.get('id', None)
+            # Regexp
+            if not numbers_check(str(id_arg)):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
+            db.session.execute(f"CALL delete_books({id_arg}, 'instance');")
+            db.session.commit()
+            return {"status": "OK"}
+
+
     @app.route('/books/filter', methods=['GET'])
     def book_id():
         id_arg = request.args.get('id', None)

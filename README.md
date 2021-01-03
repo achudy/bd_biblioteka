@@ -304,3 +304,12 @@ Parameters:
 
 Deletes a user.
 
+#### DELETE /bookinstance
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Deletes an instance of a book.
