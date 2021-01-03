@@ -163,7 +163,14 @@ def create_app():
             except OperationalError as e2:
                 return {"error": f"{e2.orig}"}, 500
         if request.method == 'DELETE':
-            return delete_by_id("books")
+            id_arg = request.args.get('id', None)
+            # Regexp
+            if not numbers_check(str(id_arg)):
+                return {"error": "Wrong input arguments"}, 500
+            # Function
+            db.session.execute(f"CALL delete_books({id_arg}, 'book');")
+            db.session.commit()
+            return {"status": "OK"}
 
     @app.route('/bookinstance', methods=['DELETE'])
     @auth.login_required
