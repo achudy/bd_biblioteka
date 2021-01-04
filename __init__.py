@@ -125,14 +125,14 @@ def create_app():
                 f"select user_type from users where login='{auth.username()}';"))[0]["user_type"] != "admin":
             return {"error": "Unauthorized access"}, 401
         if request.method == 'POST':
-            title = request.args.get('title', None)
-            author = request.args.get('author', None)
-            for_adults = request.args.get('for_adults', None)
-            library_branch = request.args.get('library_branch', None)
-            category_names = request.args.get('category_names', None)
+            title = request.form.get('title', None)
+            author = request.form.get('author', None)
+            for_adults = request.form.get('for_adults', None)
+            library_branch = request.form.get('library_branch', None)
+            category_names = request.form.get('category_names', None)
             # Regexp
             if letters_numbers_spaces_special_check(title) is not True or letters_numbers_spaces_special_check(
-                    author) is not True or one_or_zero_check(int(for_adults)) is not True or numbers_check(
+                    author) is not True or one_or_zero_check(for_adults) is not True or numbers_check(
                 str(library_branch)) is not True or letters_numbers_spaces_special_check(category_names) is not True:
                 return {"error": "Wrong input arguments"}, 500
             # Function
