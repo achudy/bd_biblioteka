@@ -18,7 +18,7 @@ def letters_numbers_spaces_special_check(string):
     string = str(string)
     if bool(re.match(r"[a-zA-Z0-9! #$%^&*={}:<>',.ąćęłńóśźżĄĆĘŁŃÓŚŹŻ-]{0,254}", string, re.UNICODE)) and bool(
             re.match(r"^((?!;).)*$", string, re.UNICODE)) and bool(
-        re.match(r"^((?!@).)*$", string, re.UNICODE)):
+            re.match(r"^((?!@).)*$", string, re.UNICODE)):
         # re.match(r"^((?!-).)*$", string, re.UNICODE)) and bool(
         return True
     else:
@@ -29,8 +29,8 @@ def letters_numbers_check(string):
     string = str(string)
     if bool(re.match(r"[a-zA-Z0-9]{0,64}", string, re.UNICODE)) and bool(
             re.match(r"^((?!;).)*$", string, re.UNICODE)) and bool(
-        re.match(r"^((?!@).)*$", string, re.UNICODE)) and bool(
-        re.match(r"^((?!-).)*$", string, re.UNICODE)):
+            re.match(r"^((?!@).)*$", string, re.UNICODE)) and bool(
+            re.match(r"^((?!-).)*$", string, re.UNICODE)):
         return True
     else:
         return False
@@ -40,8 +40,8 @@ def numbers_check(number):
     number = str(number)
     if bool(re.match(r"[0-9]{0,64}", number, re.UNICODE)) and bool(
             re.match(r"^((?!;).)*$", number, re.UNICODE)) and bool(
-        re.match(r"^((?!-).)*$", number, re.UNICODE)) and bool(
-        re.match(r"^((?!@).)*$", number, re.UNICODE)):
+            re.match(r"^((?!-).)*$", number, re.UNICODE)) and bool(
+            re.match(r"^((?!@).)*$", number, re.UNICODE)):
         return True
     else:
         return False
@@ -51,7 +51,7 @@ def date_check(number):
     number = str(number)
     if bool(re.match(r"[1-2][09][0-9][0-9][./-][01][0-9][./-][0123][0-9]", number, re.UNICODE)) and bool(
             re.match(r"^((?!;).)*$", number, re.UNICODE)) and bool(
-        re.match(r"^((?!@).)*$", number, re.UNICODE)):
+            re.match(r"^((?!@).)*$", number, re.UNICODE)):
         return True
     else:
         return False
@@ -130,15 +130,17 @@ def create_app():
             for_adults = request.form.get('for_adults', None)
             library_branch = request.form.get('library_branch', None)
             category_names = request.form.get('category_names', None)
+            number_of_book_instances = request.form.get('number_of_book_instances', None)
             # Regexp
             if letters_numbers_spaces_special_check(title) is not True or letters_numbers_spaces_special_check(
                     author) is not True or one_or_zero_check(for_adults) is not True or numbers_check(
-                str(library_branch)) is not True or letters_numbers_spaces_special_check(category_names) is not True:
+                    str(library_branch)) is not True or letters_numbers_spaces_special_check(
+                    category_names) is not True and numbers_check(str(number_of_book_instances)):
                 return {"error": "Wrong input arguments"}, 500
             # Function
             try:
                 db.session.execute(
-                    f"call add_new_book('{title}', '{author}', {for_adults}, {library_branch}, '{category_names}');")
+                    f"call add_new_book('{title}', '{author}', {for_adults}, {library_branch}, '{category_names}', '{number_of_book_instances}');")
                 db.session.commit()
                 return {"status": "OK"}
             except IntegrityError as e:
@@ -187,7 +189,6 @@ def create_app():
             db.session.execute(f"CALL delete_books({id_arg}, 'instance');")
             db.session.commit()
             return {"status": "OK"}
-
 
     @app.route('/books/filter', methods=['GET'])
     def book_id():
@@ -445,8 +446,7 @@ def create_app():
             # Regexp
             if not numbers_check(str(id_arg)) or not letters_numbers_spaces_special_check(
                     name) or not letters_numbers_spaces_special_check(surname) or not letters_numbers_check(
-                login) or not letters_numbers_spaces_special_check(password) or not date_check(
-                str(birth_date)) or not letters_numbers_check(user_type):
+                    login) or not date_check(str(birth_date)) or not letters_numbers_check(user_type):
                 return {"error": "Wrong input arguments"}, 500
             # Function
             try:
@@ -472,8 +472,8 @@ def create_app():
             # Regexp
             if not letters_numbers_spaces_special_check(
                     name) or not letters_numbers_spaces_special_check(surname) or not letters_numbers_check(
-                login) or not letters_numbers_spaces_special_check(password) or not date_check(
-                str(birth_date)) or not letters_numbers_check(user_type):
+                    login) or not letters_numbers_spaces_special_check(password) or not date_check(
+                    str(birth_date)) or not letters_numbers_check(user_type):
                 return {"error": "Wrong input arguments"}, 500
             # Function
             try:
