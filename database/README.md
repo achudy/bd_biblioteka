@@ -1,6 +1,6 @@
 # This directory contains database dump and its short description
 ## EER Diagram of DB
-![EER diagram](eer_diag.PNG)
+![EER diagram](./images/eer_diag.PNG)
 ## Table of Contents
 - [Triggers](#triggers)
   * [can_user_borrow](#can_user_borrow)
