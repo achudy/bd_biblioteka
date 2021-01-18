@@ -19,7 +19,7 @@
 ## Triggers
 * ##### can_user_borrow
     This is `BEFORE INSERT` type trigger which prevents from a situation when user can borrow a new book when he is behind with the previous ones. 
-    It also limits maximum the number of books rented at the same time to 5. Uppon successful insert the return date is set to `sysdate + 14`.
+    It also limits maximum the number of books rented at the same time to 5.</br>Uppon successful insert the return date is set to `sysdate + 14`.
 
 ## Functions
 * ##### cash_penalty
