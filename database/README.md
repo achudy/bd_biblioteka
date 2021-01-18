@@ -1,54 +1,33 @@
-# Library API for Databases Project AGH
+# This directory contains database dump and its short description
+## EER Diagram of DB
+![Result PNG](eer.PNG)
+## Table of Contents
+- [Triggers](#triggers)
+  * [can_user_borrow](#can-user-borrow)
+- [Functions](#functions)
+  * [cash_penalty](#cash-penalty)
+- [Procedures](#procedures)
+  * [add_new_book](#add-new-book)
+  * [calculate_cash_penalty](#calculate-penalty)
+  * [check_availability](#check-avail)
+  * [delete_books](#delete-book)
+  * [get_books_by_category](#get-books-by-cat)
+  * [get_books_filter](#get-category-of-book)
+  * [get_category_of_book](#get-category-of-book)
+  * [get_users_books](#get-user-book)
 
-## GET
-#### /books
-'id', 'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /books/\<id>
-'id', 'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /borrowed
-'id', 'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /borrowed/\<id>
-'id', 'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /category
-'id', 'category_name'
-#### /category/\<id>
-'id', 'category_name'
-#### /library_branch
-'id', 'name', 'address'
-#### /library_branch/\<id>
-'id', 'name', 'address'
-#### /user
-'id', 'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
-#### /user/\<id>
-'id', 'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
+## Triggers
+* ##### can_user_borrow
 
-## PUT
-#### /books/\<id>
-'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /borrowed/\<id>
-'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /category/\<id>
-'category_name'
-#### /library_branch/\<id>
-'name', 'address'
-#### /user/\<id>
-'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
+## Functions
+* ##### cash_penalty
 
-## DELETE
-#### /books/\<id>
-#### /borrowed/\<id>
-#### /category/\<id>
-#### /library_branch/\<id>
-#### /user/\<id>
-
-## POST
-#### /books
-'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /borrowed
-'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /category
-'category_name'
-#### /library_branch
-''name', 'address'
-#### /user
-'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
+## Procedures
+* ##### add_new_book
+* ##### calculate_cash_penalty
+* ##### check_availability
+* ##### delete_books
+* ##### get_books_by_category
+* ##### get_books_filter
+* ##### get_category_of_book
+* ##### get_users_books
