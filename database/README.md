@@ -17,17 +17,17 @@
   * [get_users_books](#get-user-book)
 
 ## Triggers
-* ##### can_user_borrow
+##### can_user_borrow
 
 ## Functions
-* ##### cash_penalty
+##### cash_penalty
 
 ## Procedures
-* ##### add_new_book
-* ##### calculate_cash_penalty
-* ##### check_availability
-* ##### delete_books
-* ##### get_books_by_category
-* ##### get_books_filter
-* ##### get_category_of_book
-* ##### get_users_books
+##### add_new_book
+##### calculate_cash_penalty
+##### check_availability
+##### delete_books
+##### get_books_by_category
+##### get_books_filter
+##### get_category_of_book
+##### get_users_books
