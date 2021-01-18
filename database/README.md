@@ -23,8 +23,8 @@
 ##### cash_penalty
 
 ## Procedures
-##### add_new_book
-##### calculate_cash_penalty
+* ##### add_new_book
+* ##### calculate_cash_penalty
 ##### check_availability
 ##### delete_books
 ##### get_books_by_category
