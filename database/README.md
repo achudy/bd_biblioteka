@@ -23,7 +23,7 @@
 
 ## Functions
 * ##### cash_penalty
-    This functions calculates how much money the reader owes to the library. Book penalty equals difference in days between return date and now, multiplied by a 0.25. Total penalty is the sum of book penalties.
+    This functions calculates how much money the reader owes to the library. Book penalty equals difference in days between return date and now, multiplied by a 0.25. Total penalty is the sum of book penalties.</br>
     Input arguments:
     + login:`VARCHAR(255)`, login of the user for whom the penalty is to be calculated 
 
