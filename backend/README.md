@@ -1,54 +1,316 @@
 # Library API for Databases Project AGH
 
 ## GET
-#### /books
-'id', 'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /books/\<id>
-'id', 'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /borrowed
-'id', 'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /borrowed/\<id>
-'id', 'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /category
-'id', 'category_name'
-#### /category/\<id>
-'id', 'category_name'
-#### /library_branch
-'id', 'name', 'address'
-#### /library_branch/\<id>
-'id', 'name', 'address'
-#### /user
-'id', 'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
-#### /user/\<id>
-'id', 'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
 
-## PUT
-#### /books/\<id>
-'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /borrowed/\<id>
-'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /category/\<id>
-'category_name'
-#### /library_branch/\<id>
-'name', 'address'
-#### /user/\<id>
-'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
+#### GET / 
+Gets you a classic youtube video.
 
-## DELETE
-#### /books/\<id>
-#### /borrowed/\<id>
-#### /category/\<id>
-#### /library_branch/\<id>
-#### /user/\<id>
+#### GET /authtest
+Basic authentication:
+* login
+* password
+
+Gets you a "success" if auth was handled correctly.
+
+#### GET /books 
+Gets you all the books.
+
+#### GET /books/filter
+Parameters:
+* id (int)
+* title (str)
+* author (str)
+* category (str)
+
+Example usage:
+* /books/filter?id=1
+
+Gets you only the books with "cip" in the title and "pa" in the author's name.
+
+#### GET /availability
+Parameters:
+* title (str)
+* author (str)
+
+Example usage:
+* /availability?title=Solaris&author=Stanislaw%20Lem
+
+Gets you the availability of Stanisław Lem's "Solaris"
+
+#### GET /borroweds
+Gets you all the borrowed books.
+
+#### GET /borrowed/user
+Basic authentication:
+* login
+* password
+
+Parameters:
+* login (str)
+
+Example usage:
+* /borrowed/user?login=achudy
+
+Gets you all books borrowed by the user with login "achudy". If not admin, will only see info about himself.
+
+#### GET /borrowed/id
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Example usage:
+* /borrowed/id?id=1 
+
+Gets you the borrowed book with an id=1
+
+#### GET /categories 
+Gets you all the categories of books.
+
+#### GET /categories/book
+Parameters:
+* title (str)
+* author (str)
+
+Example usage:
+* /categories/book?title=Cos%20sie%20konczy,%20cos%20sie%20zaczyna&author=Andrzej%20Sapkowski
+
+Gets you the category of Andrzej Sapkowski's "C.s.k.c.s.z."
+
+#### GET /branches 
+Gets you all the library branches.
+
+#### GET /branches/id
+Parameters:
+* id (int)
+
+Example usage:
+* /branches/id?id=1 
+
+Gets you only the branch with id=1.
+
+#### GET /users 
+Basic authentication:
+* login
+* password
+
+Gets you all the users.
+
+#### GET /users/user
+Basic authentication:
+* login
+* password
+
+Parameters:
+* login (str)
+
+Example usage:
+* /users/user?login=achudy
+
+Gets you only the user with login "achudy". If not admin, will only see info about himself.
+
+#### GET /penalty
+Basic authentication:
+* login
+* password
+
+Parameters: 
+* login (str)
+
+Gets you a penalty for a user. If not admin, will only see info about himself.
+
 
 ## POST
-#### /books
-'fk_branch_id', 'fk_category_id', 'author', 'for_adults', 'title'
-#### /borrowed
-'fk_book_id', 'fk_user_id', 'start_time', 'end_time'
-#### /category
-'category_name'
-#### /library_branch
-''name', 'address'
-#### /user
-'name', 'surname', 'login', 'password', 'birth_date', 'user_type'
+
+#### POST /register
+
+Form data: 
+* name (str)
+* surname (str)
+* login (str)
+* password (str)
+* birth_date (date)
+* user_type (str)
+
+Registers a user.
+
+#### POST /book
+Basic authentication:
+* login
+* password
+
+Form data: 
+* title (str)
+* author (str)
+* for_adults (int)
+* library_branch (int)
+* category_names (str) 
+* number_of_book_instances (int)
+
+Posts a book.
+
+#### POST /borrowed
+Basic authentication:
+* login
+* password
+
+Form data: 
+* user_id (int)
+* book_instance_id (int)
+
+Posts a borrowed record.
+
+#### POST /category
+Basic authentication:
+* login
+* password
+
+Form data: 
+* category_name (str)
+
+Posts a category.
+
+#### POST /branch
+Basic authentication:
+* login
+* password
+
+Form data: 
+* address (str)
+* library_branch_name (str)
+
+Posts a library branch.
+
+
+## PUT
+
+#### PUT /book
+Basic authentication:
+* login
+* password
+
+Form data: 
+* id (int)
+* author (str)
+* for_adults (str)
+* title (int)
+
+Updates a book.
+
+#### PUT /borrowed
+Basic authentication:
+* login
+* password
+
+Form data: 
+* id (int)
+* user_id (int)
+* book_instance_id (int)
+
+Updates a borrowed record.
+
+#### PUT /category
+Basic authentication:
+* login
+* password
+
+Form data: 
+* id (int)
+* category_name (str)
+
+Updates a category.
+
+#### PUT /branch
+Basic authentication:
+* login
+* password
+
+Form data: 
+* id (int)
+* address (str)
+* library_branch_name (str)
+
+Updates a library branch.
+
+#### PUT /users
+Basic authentication:
+* login
+* password
+
+Form data: 
+* id (int)
+* name (str)
+* surname (str)
+* login (str)
+* password (str)
+* birth_date (date)
+* user_type (str)
+
+Updates a user.
+
+## DELETE
+
+#### DELETE /book
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Example usage:
+* /books?id=1
+
+Deletes a book.
+
+#### DELETE /borrowed
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Deletes a borrowed record.
+
+#### DELETE /category
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Deletes a category.
+
+#### DELETE /branch
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Deletes a library branch.
+
+#### DELETE /users
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Deletes a user.
+
+#### DELETE /bookinstance
+Basic authentication:
+* login
+* password
+
+Parameters:
+* id (int)
+
+Deletes an instance of a book.
