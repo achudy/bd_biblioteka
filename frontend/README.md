@@ -32,8 +32,15 @@ Foobar is a Python library for dealing with word pluralization.
 Niezalogowany użytkownik ma dostęp do następujących widoków:
 - Strona główna
 ![Strona główna](./images_readme/13.PNG)
-- Wyszukiwanie książek
+- Wyszukiwanie książek. Istnieje możliwość filtrowana zasobów biblioteki po następujących kryteriach:
+             - tytuł
+             - autor
+             - kategoria
+             - połączenie kryteriów tytuł + kategoria lub autor + kategoria 
 ![Wyszukiwanie książek](./images_readme/1.PNG)
+
+Po wyszukaniu konkretnej pozycji, możemy sprawdzić jej dostępność w różnych oddziałach
+![Wyszukiwanie książek](./images_readme/14.PNG)
 - Rejestracja
 ![Logowanie](./images_readme/2.PNG)
 ![Rejestracja](./images_readme/3.PNG)
