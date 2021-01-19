@@ -1,27 +1,3 @@
-# Library system
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
 
 # Instrukcja Obsługi 
 
@@ -66,7 +42,9 @@ Jeśli zalogowany użytkownik ma uprawnienia administratorskie (jest pracownikie
   - ilość instancji książki
   - oznaczenie, czy dana książka przeznaczona jest dla osob powyżej 18 raku życia
 ![Dodawanie książek](./images_readme/4.PNG)
-- zarządzanie bieżącymi zbiorami poprzez możliwość zwiększania lub zmniejszania ilości egzemplarzy danej pozycji, usuwanie całej książki (wszystkich instancji) z zasobów biblioteki, automatyczne uzupełnianie formularza dodawania książek w przypadku gdy chcemy dodać książkę, która już istnieje w jednym oddziale, do innego
+- zarządzanie bieżącymi zbiorami poprzez możliwość zwiększania lub zmniejszania ilości egzemplarzy danej pozycji
+- usuwanie całej książki (wszystkich instancji) z zasobów biblioteki
+- automatyczne uzupełnianie formularza dodawania książek w przypadku gdy chcemy dodać książkę, która już istnieje w jednym oddziale, do innego
 ![Zarządzanie zasobami](./images_readme/5.PNG)
 - dodawanie kont nowych pracowników
 ![Dodawanie pracowników](./images_readme/6.PNG)
@@ -75,8 +53,59 @@ Jeśli zalogowany użytkownik ma uprawnienia administratorskie (jest pracownikie
 ![Zarządzanie użytkownikami](./images_readme/8.PNG)
 - możliwość dodawania nowych oddziałów (fili biblioteki)
 ![Dodawanie oddziałów](./images_readme/9.PNG)
-- możliwość wypożyczania książek
+- możliwość wypożyczania książek. W celu wypożyczenia książki należy wybrać książkę, która chcemy wypożyczyć, następnie naciskamy przycisk "Sprawdź dostępne egzemplarze " w celu wygenerowania listy dostępnych instancji. Teraz możemy wybrać użytkownika do którego chcemy przypisać daną instancję. Po nacisnięciu przycisku "Wypożycz" książka zostanie wypożyczona danemu użytkownikowi 
 ![Wypożyczanie książek](./images_readme/10.PNG)
-- przyjmowanie zwrotów
+- przyjmowanie zwrotów. W celu zwrócenia książki wyszukujemy użytkownika po loginie i naciskamy "Sprawdż zaległości". Wygenerowan zostanie lista książek wypożyczonych przez danego użytkownika. Jeśli chcemy zwrócić daną pozycję wystarczy nacisnąć przycisk zwróć znajdujący się w rekordzie dostyczącym danej książki.
 ![PRzyjmowanie zwrotów](./images_readme/11.PNG)
+
+
+# Library system
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
+# Library system
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
+
  
