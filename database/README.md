@@ -8,13 +8,13 @@
   * [cash_penalty](#cash_penalty)
 - [Procedures](#procedures)
   * [add_new_book](#add_new_book)
-  * [calculate_cash_penalty](#calculate_penalty)
-  * [check_availability](#check_avail)
-  * [delete_books](#delete_book)
-  * [get_books_by_category](#get_books_by_cat)
-  * [get_books_filter](#get_category_of_book)
+  * [calculate_cash_penalty](#calculate_cash_penalty)
+  * [check_availability](#[check_availability)
+  * [delete_books](#delete_books)
+  * [get_books_by_category](#get_books_by_category)
+  * [get_books_filter](#et_books_filter)
   * [get_category_of_book](#get_category_of_book)
-  * [get_users_books](#get_user_book)
+  * [get_users_books](#get_users_books)
 
 ## Triggers
 * ##### can_user_borrow
