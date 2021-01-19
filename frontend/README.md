@@ -25,8 +25,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 # Instrukcja Obsługi 
 
-Foobar is a Python library for dealing with word pluralization.
-
 ## Strona z punktu widzenia niezalogowanego użytkownika
 
 Niezalogowany użytkownik ma dostęp do następujących widoków:
