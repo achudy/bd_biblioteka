@@ -30,11 +30,11 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 Niezalogowany użytkownik ma dostęp do następujących widoków:
 - Strona główna
 ![Strona główna](./images_readme/13.PNG)
-* Wyszukiwanie książek. Istnieje możliwość filtrowana zasobów biblioteki po następujących kryteriach:
-             * tytuł
-             * autor
-             * kategoria
-             * połączenie kryteriów tytuł + kategoria lub autor + kategoria 
+- Wyszukiwanie książek. Istnieje możliwość filtrowana zasobów biblioteki po następujących kryteriach:
+             - tytuł
+             - autor
+             - kategoria
+             - połączenie kryteriów tytuł + kategoria lub autor + kategoria 
 ![Wyszukiwanie książek](./images_readme/1.PNG)
 
 Po wyszukaniu konkretnej pozycji, możemy sprawdzić jej dostępność w różnych oddziałach
