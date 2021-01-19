@@ -91,3 +91,14 @@
     Returns:
     + category_name
 * ##### get_users_books
+    Returns books that are borrowed by a specific user.</br>
+    Input parameters:
+    + user_login: `VARCHAR(255)`, login
+
+    Returns:
+    + id, id of row in table borrowed that contains information about this borrowed book
+    + user_id, user's id
+    + book_instance_id, id of borrowed book instance
+    + end_time, date before which the book should be returned
+    + library_branch_name, name of the library to which the book is assigned
+    + address, library's address
