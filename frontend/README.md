@@ -31,10 +31,10 @@ Niezalogowany użytkownik ma dostęp do następujących widoków:
 - Strona główna
 ![Strona główna](./images_readme/13.PNG)
 - Wyszukiwanie książek. Istnieje możliwość filtrowana zasobów biblioteki po następujących kryteriach:
-             - tytuł
-             - autor
-             - kategoria
-             - połączenie kryteriów tytuł + kategoria lub autor + kategoria 
+  - tytuł
+  - autor
+  - kategoria
+  - połączenie kryteriów tytuł + kategoria lub autor + kategoria 
 ![Wyszukiwanie książek](./images_readme/1.PNG)
 
 Po wyszukaniu konkretnej pozycji, możemy sprawdzić jej dostępność w różnych oddziałach
@@ -48,15 +48,23 @@ Po wyszukaniu konkretnej pozycji, możemy sprawdzić jej dostępność w różny
 ## Strona z punktu widzenia zalogowanego użytkownika (czytelnika)
 
 Po zalogowaniu do strony pod zakładka profil dostępną są informacje o zalogowanym użytkowniku:
-![Konto użytkownika](./images_readme/12.PNG)
 - dane osobowe
 - kwota ewentualnych kar za zaległe książki
 - wypożyczone książki
+![Konto użytkownika](./images_readme/12.PNG)
+
 
 
 ## Strona z punktu widzenia pracownika/admina
 Jeśli zalogowany użytkownik ma uprawnienia administratorskie (jest pracownikiem biblioteki) to uzyskuje on dostęp do następujących opcji:
-- możliwość dodawania nowych książek do zbiorów biblioteki
+- możliwość dodawania nowych książek do zbiorów biblioteki. W celu dodania książki do biblioteki należy uzupełnić następujące pola:
+  - tytuł
+  - autor
+  - oddział biblioteki
+  - kategorię (istnieje możliwość wybrania kilku kategori do jednej książki)
+  - jeśli kategoria do której chcemy dodać książkę nie istnieje możemy wpisać jej nazwę w polu "Dodaj nową kategorię", a następnie nacisnąć przycisk Dodaj. Kategoria powinna zostać automatycznie dodana do listy dostępnych kategorii
+  - ilość instancji książki
+  - oznaczenie, czy dana książka przeznaczona jest dla osob powyżej 18 raku życia
 ![Dodawanie książek](./images_readme/4.PNG)
 - zarządzanie bieżącymi zbiorami poprzez możliwość zwiększania lub zmniejszania ilości egzemplarzy danej pozycji, usuwanie całej książki (wszystkich instancji) z zasobów biblioteki, automatyczne uzupełnianie formularza dodawania książek w przypadku gdy chcemy dodać książkę, która już istnieje w jednym oddziale, do innego
 ![Zarządzanie zasobami](./images_readme/5.PNG)
