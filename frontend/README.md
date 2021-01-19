@@ -31,7 +31,7 @@ Foobar is a Python library for dealing with word pluralization.
 
 Niezalogowany użytkownik ma dostęp do następujących widoków:
 - Strona główna
-
+![Strona główna](./images_readme/13.PNG)
 - Wyszukiwanie książek
 ![Wyszukiwanie książek](./images_readme/1.PNG)
 - Rejestracja
