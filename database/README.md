@@ -18,7 +18,7 @@
 
 ## Triggers
 * ##### can_user_borrow
-    This is `BEFORE INSERT` type trigger which prevents from a situation when user can borrow a new book when he is behind with the previous ones. 
+    This is `BEFORE INSERT` type trigger which prevents from a situation when user can borrow a new book when he is behind with the previous ones. In this case the trigger returns list of ids of books, which need to be returned.
     It also limits maximum the number of books rented at the same time to 5.</br>Uppon successful insert the return date is set to `sysdate + 14`.
 
 ## Functions
@@ -29,8 +29,22 @@
 
 ## Procedures
 * ##### add_new_book
+    This procedure adds a new book to the library</br>
+    Input parameters:
+    + book_title: `VARCHAR(255)`, new book's title
+    + book_author: `VARCHAR(255)`, new book's author
+    + for_adults: `TINYINT`, age restriction flag, 1 means 'for adults', 0 'for everyone'
+    + library_branch: `INT`, library branch ID in which the book is stored.
+    + category_names: `VARCHAR(512)`, string that contains category names of a book. Categories are delimitted by a comma. For example: 'przygodowe,historyczne,podróżnicze'
+    + number_of_book_instances: `INT`, number of copies that are being added</br>
+Returns:
+calculated penalty
 * ##### calculate_cash_penalty
+    It runs a `cash_penalty` function using provided user login.</br>
+    Input parameters: 
+    + login: `VARCHAR(255)`, login of the user for whom the penalty is to be calculated
 * ##### check_availability
+    
 * ##### delete_books
 * ##### get_books_by_category
 * ##### get_books_filter
