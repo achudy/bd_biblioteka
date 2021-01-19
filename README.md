@@ -55,9 +55,9 @@ Jeśli zalogowany użytkownik ma uprawnienia administratorskie (jest pracownikie
 ![Dodawanie pracowników](./frontend/images_readme/7.PNG)
 - dostęp do danych czytelników oraz możliwość usunięcia ich kont
 ![Zarządzanie użytkownikami](./frontend/images_readme/8.PNG)
-- możliwość dodawania nowych oddziałów (fili biblioteki)
+- możliwość dodawania nowych oddziałów (filii biblioteki)
 ![Dodawanie oddziałów](./frontend/images_readme/9.PNG)
 - możliwość wypożyczania książek. W celu wypożyczenia książki należy wybrać książkę, która chcemy wypożyczyć, następnie naciskamy przycisk "Sprawdź dostępne egzemplarze " w celu wygenerowania listy dostępnych instancji. Teraz możemy wybrać użytkownika do którego chcemy przypisać daną instancję. Po nacisnięciu przycisku "Wypożycz" książka zostanie wypożyczona danemu użytkownikowi 
 ![Wypożyczanie książek](./frontend/images_readme/10.PNG)
 - przyjmowanie zwrotów. W celu zwrócenia książki wyszukujemy użytkownika po loginie i naciskamy "Sprawdż zaległości". Wygenerowan zostanie lista książek wypożyczonych przez danego użytkownika. Jeśli chcemy zwrócić daną pozycję wystarczy nacisnąć przycisk zwróć znajdujący się w rekordzie dostyczącym danej książki.
-![PRzyjmowanie zwrotów](./frontend/images_readme/11.PNG)
+![Przyjmowanie zwrotów](./frontend/images_readme/11.PNG)
