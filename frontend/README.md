@@ -1,4 +1,4 @@
-# library_v_0.0.2
+# Library system
 
 ## Project setup
 ```
