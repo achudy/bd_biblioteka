@@ -33,7 +33,7 @@ Niezalogowany użytkownik ma dostęp do następujących widoków:
 - Strona główna
 
 - Wyszukiwanie książek
-(./images_readme/1.PNG)
+[Wyszukiwanie książek](./images_readme/1.PNG)
 - Rejestracja
 
 
